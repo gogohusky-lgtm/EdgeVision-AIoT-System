@@ -1,5 +1,6 @@
 import os
 import csv
+from datetime import datetime
 
 LOG_DIR = "monitoring/logs"
 
@@ -52,14 +53,8 @@ def log_inference(
         writer = csv.writer(file)
 
         writer.writerow([
-
-            result.get(
-                "timestamp",
-                ""
-            ),
-
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             image_path,
-
             result.get(
                 "label",
                 ""

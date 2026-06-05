@@ -15,7 +15,6 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 
 # =========================
 # MQTT CONFIG
@@ -30,6 +29,8 @@ MQTT_PORT = 1883
 
 MQTT_TOPIC = "edgevision/prediction"
 
+HEARTBEAT_TOPIC = "edgevision/heartbeat"
+    
 # =========================
 # DATA BUFFER
 # =========================
@@ -41,6 +42,8 @@ latencies = deque(maxlen=MAX_POINTS)
 labels = deque(maxlen=MAX_POINTS)
 
 timestamps = deque(maxlen=MAX_POINTS)
+
+last_heartbeat_time = None
 
 # =========================
 # MQTT CALLBACKS
@@ -54,15 +57,9 @@ def on_connect(
 ):
 
     if rc == 0:
-
-        print(
-            "Connected to MQTT broker."
-        )
-
-        client.subscribe(
-            MQTT_TOPIC
-        )
-
+        print("Connected to MQTT broker.")
+        client.subscribe(MQTT_TOPIC)
+        client.subscribe(HEARTBEAT_TOPIC)
     else:
 
         print(
@@ -70,22 +67,19 @@ def on_connect(
         )
 
 
-def on_message(
-    client,
-    userdata,
-    msg
-):
-
+def on_message(client,userdata,msg):
+		
+    global last_heartbeat_time	
     try:
+        if msg.topic == HEARTBEAT_TOPIC:
+            payload = json.loads(msg.payload.decode())
+            last_heartbeat_time = time.time()
+            print("[Heartbeat] AI node alive")
+            return
+            
+        payload = json.loads(msg.payload.decode())
 
-        payload = json.loads(
-            msg.payload.decode()
-        )
-
-        label = payload.get(
-            "label",
-            "unknown"
-        )
+        label = payload.get("label","unknown")
 
         latency = payload.get(
             "latency_ms",
@@ -166,12 +160,18 @@ fig, ax = plt.subplots(
 )
 
 def update(frame):
+    global last_heartbeat_time
+    if last_heartbeat_time:
+
+        elapsed = (time.time()- last_heartbeat_time)
+        status = ("ONLINE" if elapsed < 20 else "OFFLINE")
+
+    else: status = "UNKNOWN"
 
     ax.clear()
-
-    ax.plot(
-        list(latencies)
-    )
+    
+    if len(latencies) >0:
+        ax.plot(list(latencies))
 
     ax.set_title(
         "Inference Latency"
@@ -187,16 +187,27 @@ def update(frame):
 
     ax.grid(True)
 
+    ax.text(
+    0.02,
+    0.95,
+    f"AI Node: {status}",
+    transform=ax.transAxes
+)
+
     # =========================
     # Save image periodically
     # =========================
 
     plt.tight_layout()
+    DASHBOARD_OUTPUT = ("/app/monitoring/dashboard/dashboard_latest.png")
+    os.makedirs(
+    os.path.dirname(DASHBOARD_OUTPUT),
+    exist_ok=True)
+    plt.savefig(DASHBOARD_OUTPUT)
 
-    plt.savefig(
-        "dashboard_latest.png"
+    print(
+        f"Dashboard updated: {DASHBOARD_OUTPUT}"
     )
-
 # =========================
 # MAIN
 # =========================
@@ -219,23 +230,12 @@ def main():
     mqtt_thread.start()
 
     # =========================
-    # Animation
-    # =========================
-
-    ani = FuncAnimation(
-        fig,
-        update,
-        interval=2000,
-        cache_frame_data=False
-    )
-
-    # =========================
     # Headless loop
     # =========================
 
     while True:
-
-        time.sleep(1)
+        update(None)
+        time.sleep(2)
 
 # =========================
 # ENTRY

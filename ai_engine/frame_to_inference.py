@@ -45,6 +45,8 @@ MODEL_PATH = "ai_engine/models/pet_classifier_fp16.tflite"
 
 POLLING_INTERVAL = 1
 
+HEARTBEAT_INTERVAL=10
+
 # =========================
 # MAIN
 # =========================
@@ -82,8 +84,21 @@ def main():
     print("System initialized.\n")
 
     try:
+    
+        
+        last_heartbeat = time.time()
 
         while True:
+
+        
+            current_time = time.time()
+
+            if current_time - last_heartbeat > HEARTBEAT_INTERVAL:
+
+                mqtt_pub.publish_heartbeat()
+
+                last_heartbeat = current_time
+
 
             files = os.listdir(
                 FRAME_DIR

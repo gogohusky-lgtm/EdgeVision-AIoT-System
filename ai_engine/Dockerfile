@@ -18,4 +18,4 @@ RUN pip install --default-timeout=1000 \
 
 COPY . /app
 
-CMD ["python", "ai_engine/frame_to_inference.py"]
+CMD ["python", "-u", "ai_engine/frame_to_inference.py"]

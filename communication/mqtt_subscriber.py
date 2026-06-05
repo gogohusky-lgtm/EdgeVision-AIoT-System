@@ -1,27 +1,55 @@
+import os
 import paho.mqtt.client as mqtt
 
+BROKER = os.getenv(
+    "MQTT_BROKER",
+    "localhost"
+)
 
-BROKER = "localhost"
 PORT = 1883
 
 TOPIC = "edgevision/prediction"
 
 
 # =========================
-# CALLBACK
+# CALLBACKS
 # =========================
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(
+    client,
+    userdata,
+    flags,
+    rc
+):
+
+    if rc == 0:
+
+        print(
+            "Connected to broker."
+        )
+
+        client.subscribe(TOPIC)
+
+        print(
+            f"Subscribed: {TOPIC}"
+        )
+
+    else:
+
+        print(
+            f"Connection failed: {rc}"
+        )
+
+
+def on_disconnect(
+    client,
+    userdata,
+    rc
+):
 
     print(
-        f"Connected to broker "
-        f"(code={rc})"
-    )
-
-    client.subscribe(TOPIC)
-
-    print(
-        f"Subscribed to: {TOPIC}"
+        f"Disconnected "
+        f"(rc={rc})"
     )
 
 
@@ -33,9 +61,7 @@ def on_message(
 
     payload = msg.payload.decode()
 
-    print(
-        f"\n[MQTT RECEIVED]"
-    )
+    print("\n[MQTT RECEIVED]")
 
     print(
         f"Topic: {msg.topic}"
@@ -54,14 +80,23 @@ client = mqtt.Client()
 
 client.on_connect = on_connect
 
+client.on_disconnect = on_disconnect
+
 client.on_message = on_message
+
+client.reconnect_delay_set(
+    min_delay=1,
+    max_delay=60
+)
 
 client.connect(
     BROKER,
     PORT,
-    60
+    keepalive=60
 )
 
-print("Starting MQTT subscriber...")
+print(
+    "Starting MQTT subscriber..."
+)
 
 client.loop_forever()

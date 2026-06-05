@@ -25,10 +25,14 @@ services:
 
     environment:
       - MQTT_BROKER=broker
+      - PYTHONUNBUFFERED=1
 
     volumes:
       - ./camera_input/captured_frames:/app/camera_input/captured_frames
       - ./monitoring/logs:/app/monitoring/logs
+      - ./ai_engine:/app/ai_engine
+      - ./communication:/app/communication
+      - ./monitoring/dashboard:/app/monitoring/dashboard
 
   dashboard_node:
 
@@ -43,3 +47,9 @@ services:
 
     environment:
       - MQTT_BROKER=broker
+
+    volumes:
+      - ./monitoring:/app/monitoring
+      - ./ai_engine:/app/ai_engine
+      - ./communication:/app/communication
+      - ./monitoring/dashboard:/app/monitoring/dashboard

@@ -20,15 +20,41 @@ This project focuses on:
 - ESP32 / Arduino series
 
 ## System Architecture
-Camera / Sensor
-        ¡õ
-AI Engine
-        ¡õ
-Event / Prediction
-        ¡õ
-MQTT / Monitoring
-        ¡õ
-Dashboard / Logging
+camera_input
+      ¢x
+      ¡¿
+ai_node
+ ¢u¢w AI Engine
+ ¢u¢w Monitoring Layer
+ ¢u¢w Action Layer
+ ¢|¢w MQTT Publisher
+      ¢x
+      ¡¿
+mqtt_broker
+      ¢x
+      ¡¿
+dashboard_node
+ ¢u¢w MQTT Subscriber
+ ¢|¢w Dashboard PNG
+
+## Current Status
+
+Phase 1 Completed
+- AI inference pipeline
+- GPIO action routing
+- Docker deployment
+
+Phase 2A Completed
+- MQTT communication
+- Heartbeat monitoring
+- CSV logging
+- Dashboard generation
+
+Next:
+- Frame Queue
+- System robustness
+- Dashboard metrics
+
 
 ## Current Modules
 
@@ -44,3 +70,14 @@ Dashboard / Logging
 ### Deployment
 - Dockerized AI services
 - Linux automation scripts
+
+## Repository Structure
+
+ai_engine/
+action_layer/
+communication/
+dashboard_node/
+monitoring/
+camera_input/
+mosquitto/
+docs/
