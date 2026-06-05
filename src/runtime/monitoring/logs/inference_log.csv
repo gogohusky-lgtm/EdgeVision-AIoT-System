@@ -1,0 +1,8 @@
+timestamp,image,label,latency_ms
+2026-06-05 15:16:19,d:\__GitHub_TBC\EdgeVision-AIoT-System\src\camera_input\captured_frames\Sphynx_138.jpg,cats,36.453199999996855
+2026-06-05 15:16:31,d:\__GitHub_TBC\EdgeVision-AIoT-System\src\camera_input\captured_frames\wheaten_terrier_171.jpg,dogs,10.111899999998286
+2026-06-05 15:16:46,d:\__GitHub_TBC\EdgeVision-AIoT-System\src\camera_input\captured_frames\living_886.jpg,others,33.555599999999686
+2026-06-05 15:16:46,d:\__GitHub_TBC\EdgeVision-AIoT-System\src\camera_input\captured_frames\living_890.jpg,others,15.84789999999714
+2026-06-05 15:16:46,d:\__GitHub_TBC\EdgeVision-AIoT-System\src\camera_input\captured_frames\living_905.jpg,others,8.007799999994347
+2026-06-05 15:16:46,d:\__GitHub_TBC\EdgeVision-AIoT-System\src\camera_input\captured_frames\living_935.jpg,others,8.004800000001921
+2026-06-05 15:16:47,d:\__GitHub_TBC\EdgeVision-AIoT-System\src\camera_input\captured_frames\living_936.jpg,others,8.74740000000429

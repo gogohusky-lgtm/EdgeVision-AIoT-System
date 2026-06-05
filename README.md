@@ -20,22 +20,21 @@ This project focuses on:
 - ESP32 / Arduino series
 
 ## System Architecture
-camera_input
-      ¢x
-      ¡¿
-ai_node
- ¢u¢w AI Engine
- ¢u¢w Monitoring Layer
- ¢u¢w Action Layer
- ¢|¢w MQTT Publisher
-      ¢x
-      ¡¿
-mqtt_broker
-      ¢x
-      ¡¿
-dashboard_node
- ¢u¢w MQTT Subscriber
- ¢|¢w Dashboard PNG
+Camera Input
+      ¡õ
+Producer
+      ¡õ
+Frame Queue
+      ¡õ
+Consumer
+      ¡õ
+Inference Engine
+      ¡õ
+Action Layer
+      ¡õ
+MQTT
+      ¡õ
+Dashboard
 
 ## Current Status
 
@@ -49,6 +48,14 @@ Phase 2A Completed
 - Heartbeat monitoring
 - CSV logging
 - Dashboard generation
+
+Phase2B-Queue Completed
+Producer ¡÷ Queue ¡÷ Consumer
+
+- Introduced producer-consumer runtime architecture
+- Added bounded frame queue buffering
+- Decoupled frame ingestion from inference processing
+- Improved robustness for burst frame arrivals
 
 Next:
 - Frame Queue
