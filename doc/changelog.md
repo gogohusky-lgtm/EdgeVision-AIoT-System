@@ -16,11 +16,10 @@ Validated:
 
 ## Phase2B
 
-- Introduced producer-consumer runtime architecture
-- Added bounded frame queue buffering
-- Decoupled frame ingestion from inference processing
-- Improved robustness for burst frame arrivals
+introduces a producer-consumer runtime architecture.
 
-Validated:
-Phase2B-Queue
-Producer ¡÷ Queue ¡÷ Consumer
+Goals:
+- Decouple frame ingestion from inference execution
+- Prevent burst traffic from blocking inference
+- Improve runtime robustness
+- Enable future scaling to multi-camera sources
