@@ -16,16 +16,13 @@ This phase introduced:
 
 # System Architecture
 
-Multi-node architecture:
-
 Camera/Input Node
-        ¡õ
+      ¡õ
 AI Inference Node
-        ¡õ MQTT
-Dashboard Node
-
-Broker:
-Mosquitto MQTT
+      ¡õ MQTT
+MQTT Broker
+      ¡õ
+Dashboard / Subscribers
 
 ---
 
@@ -180,16 +177,16 @@ Containerization forced cleaner architecture.
 
 Successfully achieved:
 
-- containerized AI inference node
-- MQTT-based communication
-- distributed dashboard subscriber
-- Docker Compose orchestration
-- modular multi-service runtime
+- Dockerized deployment
+- MQTT-based service communication
+- Distributed runtime architecture
+- Publish-subscribe messaging
+- Multi-service orchestration
 
 This phase transformed the project from:
 
-local AI demo
+Modular Edge AI application
 
 into:
 
-distributed AIoT system prototype.
+Distributed AIoT platform prototype..

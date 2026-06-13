@@ -67,7 +67,8 @@ def main():
         classifier,
         router,
         mqtt_pub,
-        log_inference
+        log_inference,
+        producer.queued_files   # 傳入共享的 set
     )
 
     print("System initialized.\n")
@@ -90,14 +91,58 @@ def main():
 
     #   -----   Graceful Shutdown
     except KeyboardInterrupt:
+
         print("\nShutting down...")
+
+        # -------------------------
+        # Stop Producer First
+        # -------------------------
+
+        print("Stopping producer...")
+
         producer.stop()
-        consumer.stop()
 
         producer.join()
+
+        print("Waiting for queue tasks...")
+
+        # -------------------------
+        # Drain Queue
+        # -------------------------
+
+        FRAME_QUEUE.join()
+
+        print("All queue tasks completed.")
+        print("Queue drained.")
+
+        # -------------------------
+        # Stop Consumer
+        # -------------------------
+
+        print("Stopping consumer...")
+
+        consumer.stop()
+
         consumer.join()
 
+        # -------------------------
+        # Shutdown Action Layer
+        # -------------------------
+
         router.shutdown()
+
+        # -------------------------
+        # MQTT Disconnect
+        # -------------------------
+
+        try:
+
+            mqtt_pub.disconnect()
+
+        except Exception:
+
+            pass
+
         print("System stopped.")
 
 #   -----   ENTRY

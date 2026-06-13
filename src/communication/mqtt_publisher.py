@@ -125,3 +125,21 @@ class MQTTPublisher:
         print(
             f"[Heartbeat Published] {time.strftime('%H:%M:%S')}"
         )
+
+    def disconnect(self):
+
+        try:
+
+            print(
+                "Disconnecting MQTT..."
+            )
+
+            self.client.loop_stop()
+
+            self.client.disconnect()
+
+        except Exception as e:
+
+            print(
+                f"MQTT disconnect error: {e}"
+            )

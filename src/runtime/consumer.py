@@ -11,7 +11,8 @@ class FrameConsumer(threading.Thread):
         classifier,
         router,
         mqtt_pub,
-        log_callback
+        log_callback,
+        enqueued_files   # 新增：共享的 set
     ):
 
         super().__init__()
@@ -21,6 +22,7 @@ class FrameConsumer(threading.Thread):
         self.router = router
         self.mqtt_pub = mqtt_pub
         self.log_callback = log_callback
+        self.enqueued_files = enqueued_files  # 保存引用
 
         self.running = True
 
@@ -30,7 +32,9 @@ class FrameConsumer(threading.Thread):
         if not os.path.exists(filepath):
 
             print(f"[WARNING] Missing file:"f" {filepath}")
+            self.enqueued_files.discard(filepath)  # 從 set 中移除（如果存在）
             self.frame_queue.task_done()
+
             return
         
         print(f"Queue size: "f"{self.frame_queue.qsize()}")
@@ -43,7 +47,7 @@ class FrameConsumer(threading.Thread):
         except Exception as e:
             print(f"[ERROR] Failed ：" f" {filepath}")
             print(e)
-                  
+            self.enqueued_files.discard(filepath)  # 從 set 中移除（如果存在）
             self.frame_queue.task_done()
             return
         print(
@@ -66,17 +70,22 @@ class FrameConsumer(threading.Thread):
             result
         )
 
-        os.remove(filepath)
+        try:
+            os.remove(filepath)
+            print(f"Removed: {filepath}")
+        except Exception as e:
+            print(f"[ERROR] Failed to remove file: {filepath}")
+            print(e)
 
-        print(
-            f"Removed: {filepath}"
-        )
+        # 通知 Producer：移除已處理的路徑
+        if filepath in self.enqueued_files:
+            self.enqueued_files.discard(filepath)
 
         self.frame_queue.task_done()
 
     def run(self):
 
-        while self.running:
+        while self.running or not self.frame_queue.empty():
 
             if self.frame_queue.empty():
 

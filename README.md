@@ -20,71 +20,120 @@ This project focuses on:
 - ESP32 / Arduino series
 
 ## System Architecture
-Camera Input
-      ��
-Producer
-      ��
-Frame Queue
-      ��
-Consumer
-      ��
-Inference Engine
-      ��
-Action Layer
-      ��
-MQTT
-      ��
-Dashboard
+![System Architecture](architecutre/phase2_runtime_architecture.png)
+
+
+# Edge AIoT System Evolution Comparison
+
+| Phase | Achievements (Outcome) | Transformation |
+|-------|-------------------------|----------------|
+| **Phase 0 — Modularized Edge AI** | - Modular AI inference architecture<br>- Monitoring layer abstraction<br>- Action layer abstraction<br>- Hardware-independent design<br>- Reusable inference pipeline | From **single Python inference script** → **modular Edge AI application** |
+| **Phase 1 — Containerized Edge AI** | - Dockerized deployment<br>- MQTT-based service communication<br>- Distributed runtime architecture<br>- Publish-subscribe messaging<br>- Multi-service orchestration | From **modular Edge AI application** → **distributed AIoT platform prototype** |
+| **Phase 2 — Resilient Edge AI** | Stress-tested with 322-image burst workload:<br>- Complete edge runtime stabilization with 100% data integrity under multi-threaded load<br>- Fully functional blocking backpressure handling via bounded queue<br>- Deterministic, zero-data-loss graceful shutdown and workspace draining<br>- Resilient background monitoring with automatic socket restoration and telemetry heartbeats | From **distributed AIoT platform prototype demonstration** → **hardened, resilient, production-ready Edge AIoT system architecture** |
+
+
+
+where the phase 2 runtime-heardening actions to build resilient edge AI is detailed as following:
+
+| Stage   | Focus              | Details  |
+| ------- | ------------------ |----------|
+| Phase2A | Observability      | - MQTT Monitoring<br> - Heartbeat<br> - Logging<br> - Dashboard |
+| Phase2B | Runtime Resilience |- Queue Architecture<br> - Producer/Consumer Thread<br> - Exception Recovery<br> - Graceful Shutdown<br> - Queue Policy/backpressure |
+
 
 ## Current Status
 
-Phase 1 Completed
-- AI inference pipeline
-- GPIO action routing
-- Docker deployment
-
-Phase 2A Completed
-- MQTT communication
-- Heartbeat monitoring
-- CSV logging
-- Dashboard generation
-
-Phase2B-Queue Completed
-Producer �� Queue �� Consumer
-
-- Introduced producer-consumer runtime architecture
-- Added bounded frame queue buffering
-- Decoupled frame ingestion from inference processing
-- Improved robustness for burst frame arrivals
-
-Next:
-- Frame Queue
-- System robustness
-- Dashboard metrics
+| Phase | Status |
+|---------|---------|
+| Phase 0 — Modularized Edge AI |  Completed |
+| Phase 1 — Containerized AIoT Platform |  Completed |
+| Phase 2 — Runtime Hardening |  Completed |
+| Phase 3 — Edge Depolymenet |  Planned |
 
 
-## Current Modules
+## Key Engineering Achievements
 
-### AI Engine
-- TensorRT inference
-- Edge AI benchmarking
-- Jetson / Raspberry Pi deployment
+### AI & Edge Deployment
 
-### IoT Layer
-- RFID access control
-- Environment sensor monitoring
+- Modular AI Inference Engine
+- Raspberry Pi / Jetson Deployment
+- Dockerized Runtime Environment
 
-### Deployment
-- Dockerized AI services
-- Linux automation scripts
+### Distributed Systems
+
+- MQTT-based Communication
+- Multi-Service Architecture
+- Dashboard Monitoring
+
+### Runtime Engineering
+
+- Producer-Consumer Queue Architecture
+- Multi-threaded Processing
+- Exception Recovery
+- Graceful Shutdown
+- Blocking Backpressure Queue
+- Burst-Traffic Stress Testing
+
 
 ## Repository Structure
 
-ai_engine/
-action_layer/
-communication/
-dashboard_node/
-monitoring/
-camera_input/
-mosquitto/
+EdgeVision-AIoT-System/
+│
+├── README.md
+│
+├── architecture/
+│
+├── docs/
+│   ├── architecture/
+│   ├── phases/
+│   ├── debugging/
+│   ├── deployment/
+│   └── lessons_learned/
+│
+└── src/
+    │
+    ├── inference_core.py
+    ├── action_layer/
+    │   └── action_router.py│
+    ├── camera_input/
+    │   ├── captured_frames/      
+    │   └── captured_frames.py
+    ├── monitoring/
+    │   └── logger.py
+    ├── communication/
+    │   ├── mqtt_subscriber.py 
+    │   └── mqtt_publisher.py
+    ├── dashboard/
+    │   └── dashboard_subscriber.py
+    └── runtime/
+        ├── monitoring/logs/    
+        ├── models/   
+        ├── frame_to_inference.py
+        ├── frame_queue.py
+        ├── producer.py
+        └── consumer.py
+   
 docs/
+├── phases/
+│   ├── phase0_modularied_edge_ai.md
+│   ├── phase1_containerization.md
+│   └── phase2_robustness.md
+│
+├── architecture/
+│   ├── initial_architecture.md
+│   ├── modularization.md
+│   ├── multi_node_design.md
+│   └── communication_flow.md
+│
+├── debugging/
+│   ├── queue_draining_and_duplicate_enqueue_analysis.md
+│   ├── mqtt_connection_refused.md
+│   ├── tensorflow_container_warning.md
+│   ├── python_package_resolution.md
+│
+└── lessons_learned/
+    ├── why_package_structure_matters.md
+    ├── docker_context_vs_copy.md
+    ├── service_boundary_design.md
+    ├── threaded runtime introduced race condition.md
+    └── runtime architecture upgrade.md
