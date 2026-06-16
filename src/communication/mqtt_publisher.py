@@ -29,20 +29,6 @@ def on_disconnect(client, userdata, rc):
 def on_publish(client, userdata, mid):
     print(f"Message {mid} published successfully.")
 
-def publish_heartbeat(self):
-
-    payload = {
-        "node": "ai_node",
-        "status": "alive",
-        "timestamp": time.time()
-    }
-
-    self.client.publish(
-        HEARTBEAT_TOPIC,
-        json.dumps(payload),
-        qos=1
-    )
-
 
 # =========================
 # PUBLISHER CLASS
@@ -125,7 +111,6 @@ class MQTTPublisher:
         print(
             f"[Heartbeat Published] {time.strftime('%H:%M:%S')}"
         )
-
     def disconnect(self):
 
         try:

@@ -79,39 +79,56 @@ where the phase 2 runtime-heardening actions to build resilient edge AI is detai
 
 EdgeVision-AIoT-System/
 │
-├── README.md
+├── docker-compose.yml
 │
-├── architecture/
+├── architecture/phase2_runtime_architecture.png
 │
 ├── docs/
-│   ├── architecture/
-│   ├── phases/
-│   ├── debugging/
-│   ├── deployment/
-│   └── lessons_learned/
+│     ├── architecture/
+│     ├── phases/
+│     ├── debugging/
+│     ├── deployment/
+│     └── lessons_learned/
 │
 └── src/
-    │
-    ├── inference_core.py
-    ├── action_layer/
-    │   └── action_router.py│
-    ├── camera_input/
-    │   ├── captured_frames/      
-    │   └── captured_frames.py
-    ├── monitoring/
-    │   └── logger.py
-    ├── communication/
-    │   ├── mqtt_subscriber.py 
-    │   └── mqtt_publisher.py
-    ├── dashboard/
-    │   └── dashboard_subscriber.py
-    └── runtime/
-        ├── monitoring/logs/    
-        ├── models/   
-        ├── frame_to_inference.py
-        ├── frame_queue.py
-        ├── producer.py
-        └── consumer.py
+      │
+      ├── inference_core.py
+      │
+      ├── ai_engine/
+      │      ├── Dockerfile_ai_node
+      │      └── requirements_ai_node.txt      
+      │
+      ├── action_layer/
+      │     ├── gpio_controller.py
+      │     └── action_router.py
+      │
+      ├── camera_input/
+      │     ├── captured_frames/      
+      │     └── webcam_capture.py
+      │
+      ├── monitoring/
+      │     ├── dashboard/dashboard_latest.png   
+      │     └── logger.py
+      │
+      ├── mosquitto/
+      │     └── mosquqitto.conf
+      │      
+      ├── communication/
+      │     ├── mqtt_subscriber.py 
+      │     └── mqtt_publisher.py
+      │      
+      ├── dashboard_node/
+      │     ├── Dockerfile_dashboard_node
+      │     ├── requirement_dashboard_node.py 
+      │     └── dashboard_subscriber.py
+      │      
+      └── runtime/
+            ├── monitoring/logs/inference_log.csv    
+            ├── models/pet_classifier_fp16.tflite   
+            ├── frame_to_inference.py
+            ├── frame_queue.py
+            ├── producer.py
+            └── consumer.py
    
 docs/
 ├── phases/

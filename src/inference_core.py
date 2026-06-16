@@ -1,8 +1,8 @@
 import time
 import numpy as np
 import cv2
-import tensorflow as tf
-# import tflite_runtime.interpreter as tflite
+# import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 
 IMG_SIZE = 160
 CLASS_NAMES = ["cats", "dogs", "others"]
@@ -21,7 +21,8 @@ class PetClassifier:
     """
 
     def __init__(self, model_path: str):
-        self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        # self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        self.interpreter = tflite.Interpreter(model_path=model_path)
         self.interpreter.allocate_tensors()
 
         self.input_details = self.interpreter.get_input_details()

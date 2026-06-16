@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     libxrender1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ai_engine/requirements.txt .
+COPY deployment/ai_node/requirements.txt .
 
 RUN pip install --default-timeout=1000 \
     --retries 10 \
@@ -18,4 +18,6 @@ RUN pip install --default-timeout=1000 \
 
 COPY . /app
 
-CMD ["python", "-u", "ai_engine/frame_to_inference.py"]
+ENV PYTHONPATH=/app/src
+
+CMD ["python", "-u", "src/runtime/frame_to_inference.py"]

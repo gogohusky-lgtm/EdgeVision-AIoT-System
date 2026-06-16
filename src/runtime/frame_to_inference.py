@@ -1,39 +1,41 @@
-import os
+from pathlib import Path
 import sys
 import time
 
-#   -----   PATH SETUP
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-#print(f"Current directory: {CURRENT_DIR}")
-PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
-#print(f"Project root: {PROJECT_ROOT}")
-sys.path.append(PROJECT_ROOT)
+# ----- PATH SETUP
+CURRENT_FILE = Path(__file__).resolve()
+CURRENT_DIR = CURRENT_FILE.parent
+print(f"Current directory: {CURRENT_DIR}")
 
-#   -----   IMPORTS
+# 專案根目錄：往上兩層 (runtime → src → EdgeVision-AIoT-System)
+PROJECT_ROOT = CURRENT_DIR.parent.parent
+print(f"Project root: {PROJECT_ROOT}")
 
+# 把 src 加入 sys.path，才能 import src 下的模組
+SRC_DIR = PROJECT_ROOT / "src"
+# export PYTHONPATH=/app/src
+sys.path.append(str(SRC_DIR))
+
+# ----- IMPORTS
 from inference_core import PetClassifier
-
 from monitoring.logger import (
     initialize_log,
     log_inference
 )
-
 from action_layer.action_router import ActionRouter
-
 from communication.mqtt_publisher import MQTTPublisher
 
-#   -----   Runtime Layer (NEW)
+# Runtime Layer (NEW)
 from runtime.frame_queue import FRAME_QUEUE
 from runtime.producer import FrameProducer
 from runtime.consumer import FrameConsumer
 
-#   -----   CONFIG
+# ----- CONFIG
+FRAME_DIR = SRC_DIR / "camera_input" / "captured_frames"
+print(f"Frame directory: {FRAME_DIR}")
 
-FRAME_DIR = os.path.join(PROJECT_ROOT, "camera_input", "captured_frames")
-#print(f"Frame directory: {FRAME_DIR}")
-MODEL_PATH = os.path.join(PROJECT_ROOT, "ai_engine", "models", "pet_classifier_fp16.tflite")
-#print(f"Model path: {MODEL_PATH}")
-
+MODEL_PATH = SRC_DIR / "models" / "pet_classifier_fp16.tflite"
+print(f"Model path: {MODEL_PATH}")
 
 POLLING_INTERVAL = 1
 HEARTBEAT_INTERVAL = 10
@@ -48,7 +50,7 @@ def main():
     initialize_log()
 
     #   -----   AI Engine
-    classifier = PetClassifier(MODEL_PATH)
+    classifier = PetClassifier(str(MODEL_PATH))
 
     #   -----   Action Layer
     router = ActionRouter()
@@ -58,7 +60,7 @@ def main():
 
     #   -----   Runtime Layer (NEW)
     producer = FrameProducer(
-        FRAME_DIR,
+        str(FRAME_DIR),
         FRAME_QUEUE
     )
 
@@ -105,6 +107,8 @@ def main():
         producer.join()
 
         print("Waiting for queue tasks...")
+        
+        print(f"Files still in folder: {len(list(FRAME_DIR.iterdir()))}")
 
         # -------------------------
         # Drain Queue

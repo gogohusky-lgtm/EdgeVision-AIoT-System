@@ -1,71 +1,29 @@
-import os
+from pathlib import Path
 import csv
 from datetime import datetime
 
-LOG_DIR = "monitoring/logs"
+# ----- PATH SETUP
+SRC_ROOT = Path(__file__).resolve().parents[1]
 
-LOG_FILE = os.path.join(
-    LOG_DIR,
-    "inference_log.csv"
-)
-
+LOG_DIR = SRC_ROOT / "monitoring" / "logs"
+LOG_FILE = LOG_DIR / "inference_log.csv"
 
 def initialize_log():
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-    os.makedirs(
-        LOG_DIR,
-        exist_ok=True
-    )
-
-    if not os.path.exists(LOG_FILE):
-
-        with open(
-            LOG_FILE,
-            mode="w",
-            newline=""
-        ) as file:
-
+    if not LOG_FILE.exists():
+        with LOG_FILE.open(mode="w", newline="") as file:
             writer = csv.writer(file)
+            writer.writerow(["timestamp", "image", "label", "latency_ms"])
+        print(f"Created log file: {LOG_FILE}")
 
-            writer.writerow([
-                "timestamp",
-                "image",
-                "label",
-                "latency_ms"
-            ])
-
-        print(
-            f"Created log file: {LOG_FILE}"
-        )
-
-
-def log_inference(
-    image_path,
-    result
-):
-
-    with open(
-        LOG_FILE,
-        mode="a",
-        newline=""
-    ) as file:
-
+def log_inference(image_path, result):
+    with LOG_FILE.open(mode="a", newline="") as file:
         writer = csv.writer(file)
-
         writer.writerow([
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             image_path,
-            result.get(
-                "label",
-                ""
-            ),
-
-            result.get(
-                "latency_ms",
-                0
-            )
+            result.get("label", ""),
+            result.get("latency_ms", 0)
         ])
-
-    print(
-        f"Logged result to: {LOG_FILE}"
-    )
+    print(f"Logged result to: {LOG_FILE}")

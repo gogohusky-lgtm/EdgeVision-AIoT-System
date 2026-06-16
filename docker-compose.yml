@@ -1,54 +1,37 @@
 services:
 
   broker:
-
     image: eclipse-mosquitto
-
     container_name: mqtt_broker
-
     ports:
       - "1883:1883"
-
     volumes:
-      - ./src/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-
+      - ./deployment/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
 
   ai_node:
-
     build:
       context: .
-      dockerfile: src/ai_engine/Dockerfile_ai_node
-
+      dockerfile: deployment/ai_node/Dockerfile
     container_name: ai_node
-
     depends_on:
       - broker
-
     environment:
       - MQTT_BROKER=broker
       - PYTHONUNBUFFERED=1
-
+      - PYTHONPATH=/app/src
     volumes:
       - ./src/camera_input/captured_frames:/app/src/camera_input/captured_frames
-      - ./src/monitoring:/app/monitoring
-
+      - ./src/monitoring:/app/src/monitoring
 
   dashboard_node:
-
     build:
       context: .
-      dockerfile: src/dashboard_node/Dockerfile_dashboard
-
+      dockerfile: deployment/dashboard_node/Dockerfile
     container_name: dashboard_node
-
     depends_on:
       - broker
-
     environment:
       - MQTT_BROKER=broker
-
+      - PYTHONPATH=/app/src
     volumes:
-      - ./src/monitoring:/app/monitoring
-
-
-  
+      - ./src/monitoring:/app/src/monitoring
