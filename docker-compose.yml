@@ -10,13 +10,14 @@ services:
       - "1883:1883"
 
     volumes:
-      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./src/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
 
   ai_node:
 
     build:
       context: .
-      dockerfile: ai_engine/Dockerfile
+      dockerfile: src/ai_engine/Dockerfile_ai_node
 
     container_name: ai_node
 
@@ -28,17 +29,15 @@ services:
       - PYTHONUNBUFFERED=1
 
     volumes:
-      - ./camera_input/captured_frames:/app/camera_input/captured_frames
-      - ./monitoring/logs:/app/monitoring/logs
-      - ./ai_engine:/app/ai_engine
-      - ./communication:/app/communication
-      - ./monitoring/dashboard:/app/monitoring/dashboard
+      - ./src/camera_input/captured_frames:/app/src/camera_input/captured_frames
+      - ./src/monitoring:/app/monitoring
+
 
   dashboard_node:
 
     build:
       context: .
-      dockerfile: dashboard_node/Dockerfile
+      dockerfile: src/dashboard_node/Dockerfile_dashboard
 
     container_name: dashboard_node
 
@@ -49,7 +48,7 @@ services:
       - MQTT_BROKER=broker
 
     volumes:
-      - ./monitoring:/app/monitoring
-      - ./ai_engine:/app/ai_engine
-      - ./communication:/app/communication
-      - ./monitoring/dashboard:/app/monitoring/dashboard
+      - ./src/monitoring:/app/monitoring
+
+
+  
