@@ -36,7 +36,7 @@ The bounded queue acts as a backpressure mechanism, preventing uncontrolled memo
 
 
 ## Deployment Diagram
-![System Architecture](architecture/deployment_diagram.png)
+![Deployment diagram](architecture/deployment_diagram.png)
 
 
 ## Dashboard Screenshot
@@ -44,7 +44,7 @@ The bounded queue acts as a backpressure mechanism, preventing uncontrolled memo
 
 
 ## Raspberry Pi Deployment Photo
-![System Architecture](doc/photos_screenshots/IMG_20260621_085657_1.png)
+![RPi5 deployment photo](doc/photos_screenshots/IMG_20260621_085657_1.jpg)
 
 
 ## Reliability Validation
